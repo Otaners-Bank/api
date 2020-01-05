@@ -14,36 +14,112 @@ namespace api.Models
         private static IMongoDatabase database = client.GetDatabase("APS");
         private static IMongoCollection<Client> collection = database.GetCollection<Client>("Otaner Bank");
 
-
-
-        public long countClients()
+        public string CountClients()
         {
-            return (long)collection.CountDocuments(new BsonDocument());
+            try
+            {
+                return (collection.CountDocuments(new BsonDocument())).ToString();
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
         }
 
-
-        public List<Client> listClients()
+        public List<Client> ListClients()
         {
-            return collection.Find(_ => true).ToList();
+            try
+            {
+                List<Client> clients = collection.Find(x => true).ToList();
+                foreach (Client client in clients)
+                {
+                    client.senha = null;
+                    client.email = null;
+                }
+                return clients;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
-        public Client listClient(String CPF)
+        public Client ListClient(String CPF)
         {
-            return listClients().Where(x => x.CPF == CPF).FirstOrDefault();
+            try
+            {
+                return ListClients().Where(x => x.CPF == CPF).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public Boolean insertClient(Client client)
+        public string InsertClient(Client client)
         {
-            return true;
+            try
+            {
+                if (ListClient(client.CPF) == null)
+                {
+                    collection.InsertOne(client);
+                    return "Client sucessfully inserted";
+                }
+                else
+                {
+                    return "Client already exists";
+                }
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
         }
 
-        public Boolean updateClient(String CPF, Client client)
+        public string UpdateClient(String CPF, Client client)
         {
-            return true;
+            try
+            {
+                if (ListClient(CPF) == null)
+                {
+                    return "Client doens't exists";
+                }
+                else
+                {
+                    var update = Builders<Client>.Update
+                    .Set("conta", client.conta)
+                        .Set("CPF", client.CPF).Set("nome", client.nome).Set("email", client.email)
+                        .Set("ultimoAcesso", client.ultimoAcesso).Set("rendaGerada", client.rendaGerada)
+                        .Set("senha", client.senha).Set("saldo", client.saldo).Set("nomeGerenteResponsavel", client.nomeGerenteResponsavel)
+                        .Set("emailGerenteResponsavel", client.emailGerenteResponsavel);
+
+                    collection.UpdateOne(x => x.CPF == CPF, update, null);
+                    return "Client sucessfully updated";
+                }
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
         }
 
-        public Boolean removeClient(String CPF)
+        public string DeleteClient(String CPF)
         {
-            return true;
+            try
+            {
+                if (ListClient(CPF) == null)
+                {
+                    return "Client doesn't exists";
+                }
+                else
+                {
+                    collection.DeleteOne(x => x.CPF == CPF, null);
+                    return "Client sucessfully removed";
+                }
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
         }
     }
 }

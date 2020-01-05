@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using api.Models;
+﻿using api.Models;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -21,15 +16,15 @@ namespace api.Controllers
         [HttpGet("count")]
         public IActionResult Get_CountClients()
         {
-            return Ok((_repository.countClients()).ToString());
+            return Ok(_repository.CountClients());
         }
 
-        // GET Clients
+        // GET Clients = search all clients
         [EnableCors("AllowMyOrigin")]
         [HttpGet]
         public IActionResult Get_Clients()
         {
-            var actionResult = _repository.listClients();
+            var actionResult = _repository.ListClients();
             if (actionResult == null)
             {
                 return NotFound();
@@ -40,15 +35,15 @@ namespace api.Controllers
             }
         }
 
-        // GET Client/CPF
+        // GET Client/CPF = search a client by CPF
         [EnableCors("AllowMyOrigin")]
         [HttpGet("{CPF}")]
         public IActionResult Get_Client(string CPF)
         {
-            var actionResult = _repository.listClient(CPF);
+            var actionResult = _repository.ListClient(CPF);
             if (actionResult == null)
             {
-                return NotFound();
+                return Ok("Client doens't exists");
             }
             else
             {
@@ -56,31 +51,31 @@ namespace api.Controllers
             }
         }
 
-        // POST api/Client
+        // POST Client + body = insert a new client
         [EnableCors("AllowMyOrigin")]
         [HttpPost]
-        public string Post()
+        public IActionResult Post([FromBody] Client client)
         {
-            return "POST";
-
+            string actionResult = _repository.InsertClient(client);
+            return Ok(actionResult);
         }
 
-        // PUT api/Client
+        // PUT Client/CPF + body = update a client
         [EnableCors("AllowMyOrigin")]
-        [HttpPut]
-        public string Put()
+        [HttpPut("{CPF}")]
+        public IActionResult Put([FromBody] Client client, string CPF)
         {
-            return "PUT";
-
+            string actionResult = _repository.UpdateClient(CPF, client);
+            return Ok(actionResult);
         }
 
-        // DELETE api/Client
+        // DELETE Client/CPF = delete a client
         [EnableCors("AllowMyOrigin")]
-        [HttpDelete]
-        public string Delete()
+        [HttpDelete("{CPF}")]
+        public IActionResult Delete(string CPF)
         {
-            return "DELETE";
-
+            string actionResult = _repository.DeleteClient(CPF);
+            return Ok(actionResult);
         }
 
     }
