@@ -1,0 +1,16 @@
+C:\projects\vs\api.otaners.bank\api\api\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
+C:\projects\vs\api.otaners.bank\api\api\bin\Debug\netcoreapp2.1\api.deps.json
+C:\projects\vs\api.otaners.bank\api\api\bin\Debug\netcoreapp2.1\api.runtimeconfig.json
+C:\projects\vs\api.otaners.bank\api\api\bin\Debug\netcoreapp2.1\api.runtimeconfig.dev.json
+C:\projects\vs\api.otaners.bank\api\api\bin\Debug\netcoreapp2.1\api.dll
+C:\projects\vs\api.otaners.bank\api\api\obj\Debug\netcoreapp2.1\api.csprojAssemblyReference.cache
+C:\projects\vs\api.otaners.bank\api\api\obj\Debug\netcoreapp2.1\api.RazorAssemblyInfo.cache
+C:\projects\vs\api.otaners.bank\api\api\obj\Debug\netcoreapp2.1\api.RazorAssemblyInfo.cs
+C:\projects\vs\api.otaners.bank\api\api\obj\Debug\netcoreapp2.1\api.AssemblyInfoInputs.cache
+C:\projects\vs\api.otaners.bank\api\api\obj\Debug\netcoreapp2.1\api.AssemblyInfo.cs
+C:\projects\vs\api.otaners.bank\api\api\obj\Debug\netcoreapp2.1\api.RazorTargetAssemblyInfo.cache
+C:\projects\vs\api.otaners.bank\api\api\bin\Debug\netcoreapp2.1\api.pdb
+C:\projects\vs\api.otaners.bank\api\api\obj\Debug\netcoreapp2.1\api.dll
+C:\projects\vs\api.otaners.bank\api\api\obj\Debug\netcoreapp2.1\api.pdb
+C:\projects\vs\api.otaners.bank\api\api\bin\Debug\netcoreapp2.1\appsettings.Development.json
+C:\projects\vs\api.otaners.bank\api\api\bin\Debug\netcoreapp2.1\appsettings.json

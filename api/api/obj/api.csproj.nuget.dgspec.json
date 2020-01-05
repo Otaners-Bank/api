@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\projects\\vs\\api.otaners.bank\\api.otaner.bank\\api\\api\\api.csproj": {}
+    "C:\\projects\\vs\\api.otaners.bank\\api\\api\\api.csproj": {}
   },
   "projects": {
-    "C:\\projects\\vs\\api.otaners.bank\\api.otaner.bank\\api\\api\\api.csproj": {
+    "C:\\projects\\vs\\api.otaners.bank\\api\\api\\api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\vs\\api.otaners.bank\\api.otaner.bank\\api\\api\\api.csproj",
+        "projectUniqueName": "C:\\projects\\vs\\api.otaners.bank\\api\\api\\api.csproj",
         "projectName": "api",
-        "projectPath": "C:\\projects\\vs\\api.otaners.bank\\api.otaner.bank\\api\\api\\api.csproj",
+        "projectPath": "C:\\projects\\vs\\api.otaners.bank\\api\\api\\api.csproj",
         "packagesPath": "C:\\Users\\usuario\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\vs\\api.otaners.bank\\api.otaner.bank\\api\\api\\obj\\",
+        "outputPath": "C:\\projects\\vs\\api.otaners.bank\\api\\api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -57,6 +57,10 @@
               "target": "Package",
               "version": "[2.1.0, )",
               "autoReferenced": true
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[2.1.10, )"
             }
           },
           "imports": [
