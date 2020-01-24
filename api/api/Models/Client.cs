@@ -11,17 +11,17 @@ namespace api.Models
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string id { get; set; }
-        public string conta { get; set; }
+        public string ACCOUNT { get; set; }
         public string CPF { get; set; }
-        public string nome { get; set; }
-        public string email { get; set; }
-        public string senha { get; set; }
-        public string saldo { get; set; }
+        public string NAME { get; set; }
+        public string EMAIL { get; set; }
+        public string PASSWORD { get; set; }
+        public string BALANCE { get; set; }
 
-        public string ultimoAcesso { get; set; }
-        public string rendaGerada { get; set; }
+        public string LAST_ACCESS { get; set; }
+        public string BALANCE_EARNED { get; set; }
 
-        public string nomeGerenteResponsavel { get; set; }
-        public string emailGerenteResponsavel { get; set; }
+        public string MANAGER_NAME { get; set; }
+        public string MANAGER_EMAIL { get; set; }
     }
 }

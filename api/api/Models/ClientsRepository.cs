@@ -11,8 +11,8 @@ namespace api.Models
         // Database settings
         private static string url = ("mongodb+srv://thales:iambatman@teste-tngy3.mongodb.net/test?retryWrites=true&w=majority");
         private static MongoClient client = new MongoClient(url);
-        private static IMongoDatabase database = client.GetDatabase("APS");
-        private static IMongoCollection<Client> collection = database.GetCollection<Client>("Otaner Bank");
+        private static IMongoDatabase database = client.GetDatabase("OtanerBank");
+        private static IMongoCollection<Client> collection = database.GetCollection<Client>("Clients");
 
         public string CountClients()
         {
@@ -33,8 +33,8 @@ namespace api.Models
                 List<Client> clients = collection.Find(x => true).ToList();
                 foreach (Client client in clients)
                 {
-                    client.senha = null;
-                    client.email = null;
+                    client.PASSWORD = null;
+                    client.EMAIL = null;
                 }
                 return clients;
             }
@@ -86,11 +86,11 @@ namespace api.Models
                 else
                 {
                     var update = Builders<Client>.Update
-                    .Set("conta", client.conta)
-                        .Set("CPF", client.CPF).Set("nome", client.nome).Set("email", client.email)
-                        .Set("ultimoAcesso", client.ultimoAcesso).Set("rendaGerada", client.rendaGerada)
-                        .Set("senha", client.senha).Set("saldo", client.saldo).Set("nomeGerenteResponsavel", client.nomeGerenteResponsavel)
-                        .Set("emailGerenteResponsavel", client.emailGerenteResponsavel);
+                    .Set("conta", client.ACCOUNT)
+                        .Set("CPF", client.CPF).Set("NAME", client.NAME).Set("EMAIL", client.EMAIL)
+                        .Set("LAST_ACCESS", client.LAST_ACCESS).Set("BALANCE_EARNED", client.BALANCE_EARNED)
+                        .Set("PASSWORD", client.PASSWORD).Set("BALANCE", client.BALANCE).Set("MANAGER_NAME", client.MANAGER_NAME)
+                        .Set("MANAGER_EMAIL", client.MANAGER_EMAIL);
 
                     collection.UpdateOne(x => x.CPF == CPF, update, null);
                     return "Client sucessfully updated";
