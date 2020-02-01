@@ -31,22 +31,22 @@ namespace api.Controllers
                     PASSWORD = _repository.SearchAdmin(adm.CPF).PASSWORD;
                     if (PASSWORD == "" || PASSWORD == string.Empty)
                     {
-                        return NotFound("Account not found");
+                        return StatusCode(404, "Account not found");
                     }
                 }
                 catch (Exception)
                 {
-                    return NotFound("Account not found");
+                    return StatusCode(404, "Account not found");
                 }
 
-                
+
                 if (PASSWORD == adm.PASSWORD)
                 {
-                    return Ok();
+                    return Ok("Welcome");
                 }
                 else
                 {
-                    return Ok("Invalid Credentials");
+                    return StatusCode(400, "Invalid Credentials");
                 }
 
             }
@@ -56,10 +56,27 @@ namespace api.Controllers
             }
         }
 
+        // GET - /CPF = search a admin by CPF
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet("{CPF}")]
+        public IActionResult SearchAdmin(string CPF)
+        {
+            var actionResult = _repository.SearchAdmin(CPF);
+            if (actionResult == null)
+            {
+                return StatusCode(404, "Admin not found");
+            }
+            else
+            {
+                return Ok(actionResult);
+            }
+        }
+
+
         // GET /Admins/Clients = search all clients
         [EnableCors("AllowMyOrigin")]
         [HttpGet("Clients")]
-        public IActionResult Get_Clients()
+        public IActionResult SearchClients()
         {
             var actionResult = _repository.Admin_SearchClients();
             if (actionResult == null)
