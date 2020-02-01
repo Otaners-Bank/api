@@ -1,21 +1,26 @@
-﻿using api.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using api.Models.Admins;
+using api.Models;
 
 namespace api.Controllers
 {
     [EnableCors("AllowMyOrigin")]
     [Route("[controller]")]
     [ApiController]
-    public class ClientsController : ControllerBase
+    public class AdminsController : ControllerBase
     {
-        private ClientsRepository _repository = new ClientsRepository();
+        private AdminsRepository _repository = new AdminsRepository();
 
         // POST /Admins/Login + body = Login Method
         [EnableCors("AllowMyOrigin")]
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] Client client)
+        public IActionResult Login([FromBody] Admin adm)
         {
             try
             {
@@ -23,7 +28,7 @@ namespace api.Controllers
 
                 try
                 {
-                    PASSWORD = _repository.SearchAccount(client.ACCOUNT).PASSWORD;
+                    PASSWORD = _repository.SearchAdmin(adm.CPF).PASSWORD;
                     if (PASSWORD == "" || PASSWORD == string.Empty)
                     {
                         return NotFound("Account not found");
@@ -34,8 +39,8 @@ namespace api.Controllers
                     return NotFound("Account not found");
                 }
 
-
-                if (PASSWORD == client.PASSWORD)
+                
+                if (PASSWORD == adm.PASSWORD)
                 {
                     return Ok();
                 }
@@ -51,27 +56,29 @@ namespace api.Controllers
             }
         }
 
-        // GET - /Clients/ClientsRegistered
+        // GET /Admins/Clients = search all clients
         [EnableCors("AllowMyOrigin")]
-        [HttpGet]
-        public IActionResult CountClientsAccounts()
+        [HttpGet("Clients")]
+        public IActionResult Get_Clients()
         {
-            try
+            var actionResult = _repository.Admin_SearchClients();
+            if (actionResult == null)
             {
-                return Ok(_repository.CountClientsAccounts());
+                return NotFound();
             }
-            catch (Exception)
+            else
             {
-                return StatusCode(500, "An error occurred");
+                return Ok(actionResult);
             }
         }
 
+
         // GET - /Clients/CPF = search a client by CPF
         [EnableCors("AllowMyOrigin")]
-        [HttpGet("{CPF}")]
+        [HttpGet("Clients/{CPF}")]
         public IActionResult SearchClient(string CPF)
         {
-            var actionResult = _repository.SearchClient(CPF);
+            var actionResult = _repository.Admin_SearchClient(CPF);
             if (actionResult == null)
             {
                 return StatusCode(404, "Client not found");
@@ -82,12 +89,13 @@ namespace api.Controllers
             }
         }
 
-        // POST - /Clients + body = insert a new client
+
+        // POST - /Admins/Client + body = insert a new client
         [EnableCors("AllowMyOrigin")]
-        [HttpPost]
+        [HttpPost("Clients")]
         public IActionResult InsertClient([FromBody] Client client)
         {
-            string actionResult = _repository.RegisterClient(client);
+            string actionResult = _repository.Admin_RegisterClient(client);
 
             if (actionResult == "200")
             {
@@ -100,12 +108,12 @@ namespace api.Controllers
             return StatusCode(500, "An error occurred");
         }
 
-        // PUT - /Client/CPF + body = update a client
+        // PUT - /Admins/Clients/CPF + body = update a client
         [EnableCors("AllowMyOrigin")]
-        [HttpPut("{CPF}")]
+        [HttpPut("Clients/{CPF}")]
         public IActionResult UpdateClient([FromBody] Client client, string CPF)
         {
-            string actionResult = _repository.UpdateClient(CPF, client);
+            string actionResult = _repository.Admin_UpdateClient(CPF, client);
 
             if (actionResult == "200")
             {

@@ -1,8 +1,8 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace api.Models
 {
@@ -14,7 +14,10 @@ namespace api.Models
         private static IMongoDatabase database = client.GetDatabase("OtanerBank");
         private static IMongoCollection<Client> collection = database.GetCollection<Client>("Clients");
 
-        public string CountClients()
+
+        // Clients stuffs
+
+        public string CountClientsAccounts()
         {
             try
             {
@@ -26,47 +29,54 @@ namespace api.Models
             }
         }
 
-        public List<Client> ListClients()
+        private List<Client> SearchClients()
         {
             try
             {
-                List<Client> clients = collection.Find(x => true).ToList();
-                foreach (Client client in clients)
-                {
-                    client.PASSWORD = null;
-                    client.EMAIL = null;
-                }
-                return clients;
+                return collection.Find(x => true).ToList();
             }
-            catch (Exception)
+            catch (MongoException)
             {
                 return null;
             }
         }
-        public Client ListClient(String CPF)
+        
+        public Client SearchClient(String CPF)
         {
             try
             {
-                return ListClients().Where(x => x.CPF == CPF).FirstOrDefault();
+                return SearchClients().Where(x => x.CPF == CPF).FirstOrDefault();
             }
-            catch (Exception)
+            catch (MongoException)
+            {
+                return null;
+            }
+        }
+        
+        public Client SearchAccount(String ACCOUNT)
+        {
+            try
+            {
+                return SearchClients().Where(x => x.ACCOUNT == ACCOUNT).FirstOrDefault();
+            }
+            catch (MongoException)
             {
                 return null;
             }
         }
 
-        public string InsertClient(Client client)
+        public string RegisterClient(Client client)
         {
             try
             {
-                if (ListClient(client.CPF) == null)
+                if (SearchClient(client.CPF) == null)
                 {
                     collection.InsertOne(client);
-                    return "Client sucessfully inserted";
+                    return "200";
                 }
                 else
                 {
-                    return "Client already exists";
+                    return "400";
                 }
             }
             catch (MongoException e)
@@ -79,41 +89,21 @@ namespace api.Models
         {
             try
             {
-                if (ListClient(CPF) == null)
+                if (SearchClient(CPF) == null)
                 {
-                    return "Client doens't exists";
+                    return "404";
                 }
                 else
                 {
                     var update = Builders<Client>.Update
-                    .Set("conta", client.ACCOUNT)
+                    .Set("ACCOUNT", client.ACCOUNT)
                         .Set("CPF", client.CPF).Set("NAME", client.NAME).Set("EMAIL", client.EMAIL)
                         .Set("LAST_ACCESS", client.LAST_ACCESS).Set("BALANCE_EARNED", client.BALANCE_EARNED)
                         .Set("PASSWORD", client.PASSWORD).Set("BALANCE", client.BALANCE).Set("MANAGER_NAME", client.MANAGER_NAME)
                         .Set("MANAGER_EMAIL", client.MANAGER_EMAIL);
 
                     collection.UpdateOne(x => x.CPF == CPF, update, null);
-                    return "Client sucessfully updated";
-                }
-            }
-            catch (MongoException e)
-            {
-                return e.GetBaseException().ToString();
-            }
-        }
-
-        public string DeleteClient(String CPF)
-        {
-            try
-            {
-                if (ListClient(CPF) == null)
-                {
-                    return "Client doesn't exists";
-                }
-                else
-                {
-                    collection.DeleteOne(x => x.CPF == CPF, null);
-                    return "Client sucessfully removed";
+                    return "200";
                 }
             }
             catch (MongoException e)
