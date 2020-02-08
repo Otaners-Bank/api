@@ -42,6 +42,30 @@ namespace api.Models.Admins
             }
         }
 
+        public string UpdateAdmin(String CPF, Admin admin)
+        {
+            try
+            {
+                if (SearchAdmin(CPF) == null)
+                {
+                    return "404";
+                }
+                else
+                {
+                    var update = Builders<Admin>.Update
+                    .Set("NAME", admin.NAME).Set("EMAIL", admin.EMAIL).Set("PASSWORD", admin.PASSWORD);
+
+                    AdminCollection.UpdateOne(x => x.CPF == CPF, update, null);
+                    return "200";
+                }
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
+        }
+
+
 
         //Client stuffs
 

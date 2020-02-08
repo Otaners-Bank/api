@@ -73,6 +73,26 @@ namespace api.Controllers
         }
 
 
+        // PUT - /Admins/Clients/CPF + body = update a client
+        [EnableCors("AllowMyOrigin")]
+        [HttpPut("{CPF}")]
+        public IActionResult UpdateAdmin([FromBody] Admin admin, string CPF)
+        {
+            string actionResult = _repository.UpdateAdmin(CPF, admin);
+
+            if (actionResult == "200")
+            {
+                return Ok("Updates sucessfuly applied !");
+            }
+            else if (actionResult == "404")
+            {
+                return StatusCode(404, "Admin not found");
+            }
+            return StatusCode(500, "An error occurred");
+        }
+
+
+
         // GET /Admins/Clients = search all clients
         [EnableCors("AllowMyOrigin")]
         [HttpGet("Clients")]
