@@ -17,6 +17,7 @@ namespace api.Controllers
     {
         private AdminsRepository _repository = new AdminsRepository();
 
+        // Admin Methods
         // POST /Admins/Login + body = Login Method
         [EnableCors("AllowMyOrigin")]
         [HttpPost("Login")]
@@ -56,9 +57,9 @@ namespace api.Controllers
             }
         }
 
-        // GET - /CPF = search a admin by CPF
+        // GET - Search/CPF = Search a admin by CPF
         [EnableCors("AllowMyOrigin")]
-        [HttpGet("{CPF}")]
+        [HttpGet("Search/{CPF}")]
         public IActionResult SearchAdmin(string CPF)
         {
             var actionResult = _repository.SearchAdmin(CPF);
@@ -72,17 +73,16 @@ namespace api.Controllers
             }
         }
 
-
-        // PUT - /Admins/Clients/CPF + body = update a client
+        // PUT - /Admins/Update/CPF + body = Update a admin
         [EnableCors("AllowMyOrigin")]
-        [HttpPut("{CPF}")]
+        [HttpPut("Update/{CPF}")]
         public IActionResult UpdateAdmin([FromBody] Admin admin, string CPF)
         {
             string actionResult = _repository.UpdateAdmin(CPF, admin);
 
             if (actionResult == "200")
             {
-                return Ok("Updates sucessfuly applied !");
+                return Ok("Updates sucessfuly applied");
             }
             else if (actionResult == "404")
             {
@@ -91,28 +91,51 @@ namespace api.Controllers
             return StatusCode(500, "An error occurred");
         }
 
-
-
-        // GET /Admins/Clients = search all clients
+        // Clients Methods
+        // POST - /Admins/Clients/Insert + body = insert a new active client
         [EnableCors("AllowMyOrigin")]
-        [HttpGet("Clients")]
-        public IActionResult SearchClients()
+        [HttpPost("Clients/Insert")]
+        public IActionResult InsertClient([FromBody] Client client)
         {
-            var actionResult = _repository.Admin_SearchClients();
-            if (actionResult == null)
+            client.STATUS = "1";
+            string actionResult = _repository.Admin_RegisterClient(client);
+
+            if (actionResult == "200")
             {
-                return NotFound();
+                return Ok("Sucessfuly registered");
             }
-            else
+            else if (actionResult == "400")
             {
-                return Ok(actionResult);
+                return StatusCode(400, "Client already registered");
             }
+            return StatusCode(500, "An error occurred");
         }
 
-
-        // GET - /Clients/CPF = search a client by CPF
+        // PUT - /Admins/Clients/Update/CPF + body = update a active client
         [EnableCors("AllowMyOrigin")]
-        [HttpGet("Clients/{CPF}")]
+        [HttpPut("Clients/Update/{CPF}")]
+        public IActionResult UpdateClient([FromBody] Client client, string CPF)
+        {
+            string actionResult = _repository.Admin_UpdateClient(CPF, client);
+
+            if (actionResult == "403")
+            {
+                return StatusCode(403, "This account is inactived, and must be active to be update");
+            }
+            else if (actionResult == "200")
+            {
+                return Ok("Updates sucessfuly applied");
+            }
+            else if (actionResult == "404")
+            {
+                return StatusCode(404, "Client not found");
+            }
+            return StatusCode(500, "An error occurred");
+        }
+
+        // GET - /Admins/Clients/Search/CPF = search a client by CPF
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet("Clients/Search/{CPF}")]
         public IActionResult SearchClient(string CPF)
         {
             var actionResult = _repository.Admin_SearchClient(CPF);
@@ -126,42 +149,144 @@ namespace api.Controllers
             }
         }
 
-
-        // POST - /Admins/Client + body = insert a new client
+        // GET /Admins/Clients/Search/All = search all clients
         [EnableCors("AllowMyOrigin")]
-        [HttpPost("Clients")]
-        public IActionResult InsertClient([FromBody] Client client)
+        [HttpGet("Clients/Search/All")]
+        public IActionResult SearchAllClients()
         {
-            string actionResult = _repository.Admin_RegisterClient(client);
-
-            if (actionResult == "200")
+            var actionResult = _repository.Admin_SearchClients();
+            if (actionResult == null)
             {
-                return Ok("Sucessfuly registered !");
+                return NotFound();
             }
-            else if (actionResult == "400")
+            else
             {
-                return StatusCode(400, "Client already registered");
+                return Ok(actionResult);
             }
-            return StatusCode(500, "An error occurred");
         }
 
-        // PUT - /Admins/Clients/CPF + body = update a client
-        [EnableCors("AllowMyOrigin")]
-        [HttpPut("Clients/{CPF}")]
-        public IActionResult UpdateClient([FromBody] Client client, string CPF)
-        {
-            string actionResult = _repository.Admin_UpdateClient(CPF, client);
 
-            if (actionResult == "200")
+        // Active Clients Methods
+        // GET /Admins/Clients/Active/Search/All = search all active clients
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet("Clients/Active/Search/All")]
+        public IActionResult SearchActiveClients()
+        {
+            var actionResult = _repository.Admin_SearchActiveClients();
+            if (actionResult == null)
             {
-                return Ok("Updates sucessfuly applied !");
+                return NotFound();
             }
-            else if (actionResult == "404")
+            else
             {
-                return StatusCode(404, "Client not found");
+                return Ok(actionResult);
             }
-            return StatusCode(500, "An error occurred");
         }
+
+        // GET - /Clients/Active/CountTotal = count the total of active clients inserted
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet("Clients/Active/CountTotal")]
+        public IActionResult CountActiveClientsAccounts()
+        {
+            try
+            {
+                return StatusCode(200, _repository.Admin_CountActiveClientsAccounts());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
+        // DELETE - /Clients/ActiveClient/CPF = active a client by CPF
+        [EnableCors("AllowMyOrigin")]
+        [HttpDelete("Clients/ActiveClient/{CPF}")]
+        public IActionResult ActiveClient(string CPF)
+        {
+            try
+            {
+                string actionResult = _repository.Admin_ActiveClient(CPF);
+
+                if (actionResult == "200")
+                {
+                    return Ok("Client successfuly activated");
+                }
+                else if (actionResult == "404")
+                {
+                    return StatusCode(404, "Client not found");
+                }
+                else
+                {
+                    return StatusCode(500, "An error occurred");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
+
+        // Inactive Clients Methods
+        // GET /Admins/Clients/Active/Search/All = search all active clients
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet("Clients/Inactive/Search/All")]
+        public IActionResult SearchInactiveClients()
+        {
+            var actionResult = _repository.Admin_SearchInactiveClients();
+            if (actionResult == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(actionResult);
+            }
+        }
+
+        // GET - /Clients/Active/CountTotal = count the total of inactive clients inserted
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet("Clients/Inactive/CountTotal")]
+        public IActionResult CountInactiveClientsAccounts()
+        {
+            try
+            {
+                return StatusCode(200, _repository.Admin_CountInactiveClientsAccounts());
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
+        // DELETE - /Clients/InactiveClient/CPF = inactive a client by CPF
+        [EnableCors("AllowMyOrigin")]
+        [HttpDelete("Clients/InactiveClient/{CPF}")]
+        public IActionResult InactiveClient(string CPF)
+        {
+            try
+            {
+                string actionResult = _repository.Admin_InactiveClient(CPF);
+
+                if (actionResult == "200")
+                {
+                    return Ok("Client successfuly inactivated");
+                }
+                else if (actionResult == "404")
+                {
+                    return StatusCode(404, "Client not found");
+                }
+                else
+                {
+                    return StatusCode(500, "An error occurred");
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
 
     }
 }

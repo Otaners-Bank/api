@@ -68,19 +68,6 @@ namespace api.Models.Admins
 
 
         //Client stuffs
-
-        public string Admin_CountClientsAccounts()
-        {
-            try
-            {
-                return (ClientCollection.CountDocuments(new BsonDocument())).ToString();
-            }
-            catch (MongoException e)
-            {
-                return e.GetBaseException().ToString();
-            }
-        }
-
         public List<Client> Admin_SearchClients()
         {
             try
@@ -133,6 +120,10 @@ namespace api.Models.Admins
                 {
                     return "404";
                 }
+                else if (Admin_SearchClient(CPF).STATUS == "0")
+                {
+                    return "403";
+                }
                 else
                 {
                     var update = Builders<Client>.Update
@@ -140,7 +131,7 @@ namespace api.Models.Admins
                         .Set("CPF", client.CPF).Set("NAME", client.NAME).Set("EMAIL", client.EMAIL)
                         .Set("LAST_ACCESS", client.LAST_ACCESS).Set("BALANCE_EARNED", client.BALANCE_EARNED)
                         .Set("PASSWORD", client.PASSWORD).Set("BALANCE", client.BALANCE).Set("MANAGER_NAME", client.MANAGER_NAME)
-                        .Set("MANAGER_EMAIL", client.MANAGER_EMAIL);
+                        .Set("MANAGER_EMAIL", client.MANAGER_EMAIL).Set("STATUS", "1");
 
                     ClientCollection.UpdateOne(x => x.CPF == CPF, update, null);
                     return "200";
@@ -151,6 +142,113 @@ namespace api.Models.Admins
                 return e.GetBaseException().ToString();
             }
         }
+
+        // Active Clients stuffs
+        public string Admin_CountInactiveClientsAccounts()
+        {
+            try
+            {
+                return Admin_SearchInactiveClients().Count().ToString();
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
+        }
+
+        public List<Client> Admin_SearchInactiveClients()
+        {
+            try
+            {
+                return ClientCollection.Find(x => x.STATUS == "0").ToList();
+            }
+            catch (MongoException)
+            {
+                return null;
+            }
+        }
+
+        public string Admin_ActiveClient(String CPF)
+        {
+            try
+            {
+                if (Admin_SearchClient(CPF) == null)
+                {
+                    return "404";
+                }
+                else
+                {
+                    Client client = Admin_SearchClient(CPF);
+                    var update = Builders<Client>.Update
+                    .Set("ACCOUNT", client.ACCOUNT)
+                        .Set("CPF", client.CPF).Set("NAME", client.NAME).Set("EMAIL", client.EMAIL)
+                        .Set("LAST_ACCESS", client.LAST_ACCESS).Set("BALANCE_EARNED", client.BALANCE_EARNED)
+                        .Set("PASSWORD", client.PASSWORD).Set("BALANCE", client.BALANCE).Set("MANAGER_NAME", client.MANAGER_NAME)
+                        .Set("MANAGER_EMAIL", client.MANAGER_EMAIL).Set("STATUS", "1");
+
+                    ClientCollection.UpdateOne(x => x.CPF == CPF, update, null);
+                    return "200";
+                }
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
+        }
+
+        // Inactive Clients stuffs
+        public string Admin_CountActiveClientsAccounts()
+        {
+            try
+            {
+                return Admin_SearchActiveClients().Count().ToString();
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
+        }
+
+        public List<Client> Admin_SearchActiveClients()
+        {
+            try
+            {
+                return ClientCollection.Find(x => x.STATUS == "1").ToList();
+            }
+            catch (MongoException)
+            {
+                return null;
+            }
+        }
+
+        public string Admin_InactiveClient(String CPF)
+        {
+            try
+            {
+                if (Admin_SearchClient(CPF) == null)
+                {
+                    return "404";
+                }                
+                else
+                {
+                    Client client = Admin_SearchClient(CPF);
+                    var update = Builders<Client>.Update
+                    .Set("ACCOUNT", client.ACCOUNT)
+                        .Set("CPF", client.CPF).Set("NAME", client.NAME).Set("EMAIL", client.EMAIL)
+                        .Set("LAST_ACCESS", client.LAST_ACCESS).Set("BALANCE_EARNED", client.BALANCE_EARNED)
+                        .Set("PASSWORD", client.PASSWORD).Set("BALANCE", client.BALANCE).Set("MANAGER_NAME", client.MANAGER_NAME)
+                        .Set("MANAGER_EMAIL", client.MANAGER_EMAIL).Set("STATUS", "0");
+
+                    ClientCollection.UpdateOne(x => x.CPF == CPF, update, null);
+                    return "200";
+                }
+            }
+            catch (MongoException e)
+            {
+                return e.GetBaseException().ToString();
+            }
+        }
+
 
     }
 }

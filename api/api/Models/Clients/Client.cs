@@ -23,5 +23,8 @@ namespace api.Models
 
         public string MANAGER_NAME { get; set; }
         public string MANAGER_EMAIL { get; set; }
+
+        public string STATUS { get; set; }
+
     }
 }

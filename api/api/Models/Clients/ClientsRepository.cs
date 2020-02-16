@@ -40,19 +40,31 @@ namespace api.Models
                 return null;
             }
         }
-        
+
         public Client SearchClient(String CPF)
         {
             try
             {
-                return SearchClients().Where(x => x.CPF == CPF).FirstOrDefault();
+                Client client = SearchClients().Where(x => x.CPF == CPF).FirstOrDefault();
+
+                if (client.STATUS == "1")
+                {
+                    return client;
+                }
+                else
+                {
+                    return new Client
+                    {
+                        STATUS = "0"
+                    };
+                }
             }
             catch (MongoException)
             {
                 return null;
             }
         }
-        
+
         public Client SearchAccount(String ACCOUNT)
         {
             try
@@ -100,7 +112,7 @@ namespace api.Models
                         .Set("CPF", client.CPF).Set("NAME", client.NAME).Set("EMAIL", client.EMAIL)
                         .Set("LAST_ACCESS", client.LAST_ACCESS).Set("BALANCE_EARNED", client.BALANCE_EARNED)
                         .Set("PASSWORD", client.PASSWORD).Set("BALANCE", client.BALANCE).Set("MANAGER_NAME", client.MANAGER_NAME)
-                        .Set("MANAGER_EMAIL", client.MANAGER_EMAIL);
+                        .Set("MANAGER_EMAIL", client.MANAGER_EMAIL).Set("STATUS", "1");
 
                     collection.UpdateOne(x => x.CPF == CPF, update, null);
                     return "200";

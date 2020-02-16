@@ -12,7 +12,15 @@ namespace api.Controllers
     {
         private ClientsRepository _repository = new ClientsRepository();
 
-        // POST /Admins/Login + body = Login Method
+        // GET - /Clients = The inicial page of API
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet]
+        public string Home()
+        {
+            return "Visit our main site in https://thaleslj.github.io/otanersbank/";
+        }
+
+        // POST /Clients/Login + body = Login Method only for active accounts
         [EnableCors("AllowMyOrigin")]
         [HttpPost("Login")]
         public IActionResult Login([FromBody] Client client)
@@ -23,25 +31,33 @@ namespace api.Controllers
 
                 try
                 {
-                    PASSWORD = _repository.SearchAccount(client.ACCOUNT).PASSWORD;
+                    Client cli = _repository.SearchAccount(client.ACCOUNT);
+                    PASSWORD = cli.PASSWORD;
+
+                    if (cli.STATUS == "0")
+                    {
+                        return StatusCode(403, "This account is inactived");
+                    }
+
                     if (PASSWORD == "" || PASSWORD == string.Empty)
                     {
-                        return NotFound("Account not found");
+                        return StatusCode(404, "Account not found");
                     }
+
                 }
                 catch (Exception)
                 {
-                    return NotFound("Account not found");
+                    return StatusCode(404, "Account not found");
                 }
 
 
                 if (PASSWORD == client.PASSWORD)
                 {
-                    return Ok();
+                    return StatusCode(200, "Welcome");
                 }
                 else
                 {
-                    return Ok("Invalid Credentials");
+                    return StatusCode(403, "Invalid Credentials");
                 }
 
             }
@@ -51,14 +67,14 @@ namespace api.Controllers
             }
         }
 
-        // GET - /Clients/ClientsRegistered
+        // GET - /Clients/CountTotal = Count the total of clients inserted
         [EnableCors("AllowMyOrigin")]
-        [HttpGet]
+        [HttpGet("CountTotal")]
         public IActionResult CountClientsAccounts()
         {
             try
             {
-                return Ok(_repository.CountClientsAccounts());
+                return StatusCode(200, _repository.CountClientsAccounts());
             }
             catch (Exception)
             {
@@ -66,9 +82,9 @@ namespace api.Controllers
             }
         }
 
-        // GET - /Clients/CPF = search a client by CPF
+        // GET - /Clients/Search/CPF = Search a active client by CPF
         [EnableCors("AllowMyOrigin")]
-        [HttpGet("{CPF}")]
+        [HttpGet("Search/{CPF}")]
         public IActionResult SearchClient(string CPF)
         {
             var actionResult = _repository.SearchClient(CPF);
@@ -76,22 +92,27 @@ namespace api.Controllers
             {
                 return StatusCode(404, "Client not found");
             }
+            else if (actionResult.STATUS == "0")
+            {
+                return StatusCode(403, "This account is inactived");
+            }
             else
             {
-                return Ok(actionResult);
+                return StatusCode(200, actionResult);
             }
         }
 
-        // POST - /Clients + body = insert a new client
+        // POST - /Clients/Register + body = Insert a new client active
         [EnableCors("AllowMyOrigin")]
-        [HttpPost]
+        [HttpPost("Register")]
         public IActionResult InsertClient([FromBody] Client client)
         {
+            client.STATUS = "1";
             string actionResult = _repository.RegisterClient(client);
 
             if (actionResult == "200")
             {
-                return Ok("Sucessfuly registered !");
+                return Ok("Sucessfuly registered");
             }
             else if (actionResult == "400")
             {
@@ -100,16 +121,23 @@ namespace api.Controllers
             return StatusCode(500, "An error occurred");
         }
 
-        // PUT - /Client/CPF + body = update a client
+        // PUT - /Client/Update/CPF + body = Update a active client
         [EnableCors("AllowMyOrigin")]
-        [HttpPut("{CPF}")]
+        [HttpPut("Update/{CPF}")]
         public IActionResult UpdateClient([FromBody] Client client, string CPF)
         {
-            string actionResult = _repository.UpdateClient(CPF, client);
+            string actionResult;
+
+            if (_repository.SearchClient(CPF).STATUS == "0")
+            {
+                return StatusCode(403, "This account is inactived");
+            }
+
+            actionResult = _repository.UpdateClient(CPF, client);
 
             if (actionResult == "200")
             {
-                return Ok("Updates sucessfuly applied !");
+                return Ok("Updates sucessfuly applied");
             }
             else if (actionResult == "404")
             {
