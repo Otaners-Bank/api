@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net;
+using System.Net.Mail;
 
 namespace api.Controllers
 {
@@ -15,9 +17,20 @@ namespace api.Controllers
         // GET - /Clients = The inicial page of API
         [EnableCors("AllowMyOrigin")]
         [HttpGet]
-        public string Home()
+        public ContentResult Home()
         {
-            return "Visit our main site in https://thaleslj.github.io/otanersbank/";
+            // NotifyClient(new Client { NAME = "Thales", EMAIL = "thaleslimadejesus@gmail.com" }, "Teste");
+            return new ContentResult
+            {
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+                Content = "<html style=\"background-color: #252630;\">" +
+                "<body style=\"text-align:center; margin-top:1%;\">" +
+                "<h2 style=\"color:white;\">Visit our main site in:</h2>" +
+                "<a style=\"color:white;\" href=\"https://thaleslj.github.io/otanersbank/ \">Otaner's Bank</a>" +
+                "</body>" +
+                "</html>"
+            };
         }
 
         // POST /Clients/Login + body = Login Method only for active accounts
@@ -53,6 +66,7 @@ namespace api.Controllers
 
                 if (PASSWORD == client.PASSWORD)
                 {
+                    NotifyClient(client, "We inform that someone just logged on your account!");
                     return StatusCode(200, "Welcome");
                 }
                 else
@@ -112,6 +126,7 @@ namespace api.Controllers
 
             if (actionResult == "200")
             {
+                NotifyClient(client, "Account successfuly created, Welcome to OTANER'S BANK !!!");
                 return Ok("Sucessfuly registered");
             }
             else if (actionResult == "400")
@@ -137,6 +152,7 @@ namespace api.Controllers
 
             if (actionResult == "200")
             {
+                NotifyClient(client, "We inform that your account has been sucessfuly updated!");
                 return Ok("Updates sucessfuly applied");
             }
             else if (actionResult == "404")
@@ -144,6 +160,35 @@ namespace api.Controllers
                 return StatusCode(404, "Client not found");
             }
             return StatusCode(500, "An error occurred");
+        }
+
+
+        public static void NotifyClient(Client client, string message)
+        {
+            try
+            {
+                using (MailMessage mail = new MailMessage())
+                {
+                    mail.From = new MailAddress("otaner.bank@gmail.com");
+                    mail.To.Add(client.EMAIL);
+                    mail.Subject = "Otaner's Bank - Alert for account " + client.ACCOUNT + " - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                    mail.Body = "<h1 style=\"text-align:center;\">Hey " + client.NAME + "</h1>" +
+                        "<p style=\"text-align:center;\">" + message + "</p>";
+                    mail.IsBodyHtml = true;
+                    // mail.Attachments.Add(new Attachment("C:\\file.zip"));
+
+                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        smtp.Credentials = new NetworkCredential("otaner.bank@gmail.com", "otaner@2020");
+                        smtp.EnableSsl = true;
+                        smtp.Send(mail);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                
+            }
         }
 
     }
