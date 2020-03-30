@@ -46,3 +46,4 @@ C:\projects\OtanersBank\API\master\api\api\obj\Debug\netcoreapp2.1\api.AssemblyI
 C:\projects\OtanersBank\API\master\api\api\obj\Debug\netcoreapp2.1\api.RazorTargetAssemblyInfo.cache
 C:\projects\OtanersBank\API\master\api\api\obj\Debug\netcoreapp2.1\api.dll
 C:\projects\OtanersBank\API\master\api\api\obj\Debug\netcoreapp2.1\api.pdb
+C:\projects\OtanersBank\API\master\api\api\bin\Debug\netcoreapp2.1\Models\Google\client_secret.json

@@ -14,25 +14,6 @@ namespace api.Controllers
     {
         private ClientsRepository _repository = new ClientsRepository();
 
-        // GET - /Clients = The inicial page of API
-        [EnableCors("AllowMyOrigin")]
-        [HttpGet]
-        public ContentResult Home()
-        {
-            // NotifyClient(new Client { NAME = "Thales", EMAIL = "thaleslimadejesus@gmail.com" }, "Teste");
-            return new ContentResult
-            {
-                ContentType = "text/html",
-                StatusCode = (int)HttpStatusCode.OK,
-                Content = "<html style=\"background-color: #252630;\">" +
-                "<body style=\"text-align:center; margin-top:1%;\">" +
-                "<h2 style=\"color:white;\">Visit our main site in:</h2>" +
-                "<a style=\"color:white;\" href=\"https://thaleslj.github.io/otanersbank/ \">Otaner's Bank</a>" +
-                "</body>" +
-                "</html>"
-            };
-        }
-
         // POST /Clients/Login + body = Login Method only for active accounts
         [EnableCors("AllowMyOrigin")]
         [HttpPost("Login")]
@@ -187,7 +168,7 @@ namespace api.Controllers
             }
             catch (Exception)
             {
-                
+
             }
         }
 

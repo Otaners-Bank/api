@@ -41,6 +41,26 @@
       "frameworks": {
         "netcoreapp2.1": {
           "dependencies": {
+            "Google.Apis": {
+              "target": "Package",
+              "version": "[1.44.1, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.44.1, )"
+            },
+            "Google.Apis.Core": {
+              "target": "Package",
+              "version": "[1.44.1, )"
+            },
+            "Google.Apis.Drive.v2": {
+              "target": "Package",
+              "version": "[1.44.1.1888, )"
+            },
+            "Google.Apis.Drive.v3": {
+              "target": "Package",
+              "version": "[1.44.1.1888, )"
+            },
             "Microsoft.AspNetCore.App": {
               "suppressParent": "All",
               "target": "Package",
@@ -69,6 +89,10 @@
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[2.10.0, )"
+            },
+            "PGoogleDrive": {
+              "target": "Package",
+              "version": "[1.0.0, )"
             }
           },
           "imports": [

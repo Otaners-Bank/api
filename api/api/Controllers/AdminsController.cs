@@ -9,6 +9,7 @@ using api.Models.Admins;
 using api.Models;
 using System.Net.Mail;
 using System.Net;
+using api.Models.Google;
 
 namespace api.Controllers
 {
@@ -93,6 +94,82 @@ namespace api.Controllers
                 return StatusCode(404, "Admin not found");
             }
             return StatusCode(500, "An error occurred");
+        }
+
+        // POST - /Admin/UploadImage/CPF = upload a image using admin CPF
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet("UploadImage")]
+        public IActionResult UploadImage(string CPF, string path)
+        {
+            try
+            {
+                string actionResult = GoogleDriveFilesRepository.UploadImage("admin_" + CPF, path);
+
+                if (actionResult == "200")
+                {
+                    NotifyAdmin(_repository.SearchAdmin(CPF), "We inform that your image profile has been sucessfully updated !");
+                    return Ok("The image has been sucessfully uploaded");
+                }
+                else
+                {
+                    return StatusCode(500, "An error occurred");
+                }
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred");
+            }
+        }
+
+        // GET - /Admins/DownloadImage = shows the admins images
+        [EnableCors("AllowMyOrigin")]
+        [HttpGet("DownloadImage")]
+        public IActionResult DownloadImage(string CPF)
+        {
+            if (GoogleDriveFilesRepository.VerifyImage("admin_" + CPF) == "404")
+            {
+                return StatusCode(404, "Image not found!");
+            }
+            else
+            {
+                return StatusCode(200, "https://drive.google.com/uc?id=" + GoogleDriveFilesRepository.LoadImage("admin_" + CPF));
+            }
+
+            /*if (GoogleDriveFilesRepository.VerifyImage(CPF) == "404")
+            {
+                return new ContentResult
+                {
+                    ContentType = "text/html",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = "<html>" +
+                    "<head> <meta charset=\"UTF-8\">" +
+                "<body style=\"text-align:center; padding:0; margin:0;\">" +
+                "<h1>Este Admin não possui imagem</h1>" +
+                "</head>" +
+                "</body>" +
+                "</html>"
+                };
+            }
+            else
+            {
+                return new ContentResult
+                {
+                    ContentType = "text/html",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = "<html style=\"background-color: #252630;\">" +
+                    "<head> <meta charset=\"UTF-8\">" +
+            "<body style=\"text-align:center; padding:0; margin:0;\">" +
+            "<img src=\"https://drive.google.com/uc?id=" + GoogleDriveFilesRepository.LoadImage(CPF) + "\"/>" +
+            "<h1> " + GoogleDriveFilesRepository.LoadImage(CPF) + "</h1>" +
+                "</head>" +
+            "</body>" +
+            "</html>"
+                };
+            }*/
+
+
+
         }
 
         // Clients Methods
@@ -294,8 +371,6 @@ namespace api.Controllers
                 return StatusCode(500, "An error occurred");
             }
         }
-
-
 
         public static void NotifyClient(Client client, string message)
         {
