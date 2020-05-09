@@ -13,7 +13,7 @@ using api.Models.Google;
 
 namespace api.Controllers
 {
-    [EnableCors("AllowMyOrigin")]
+    [EnableCors("MyPolicy")]
     [Route("[controller]")]
     [ApiController]
     public class AdminsController : ControllerBase
@@ -22,7 +22,7 @@ namespace api.Controllers
 
         // Admin Methods
         // POST /Admins/Login + body = Login Method
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpPost("Login")]
         public IActionResult Login([FromBody] Admin adm)
         {
@@ -62,7 +62,7 @@ namespace api.Controllers
         }
 
         // GET - Search/CPF = Search a admin by CPF
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("Search/{CPF}")]
         public IActionResult SearchAdmin(string CPF)
         {
@@ -78,7 +78,7 @@ namespace api.Controllers
         }
 
         // PUT - /Admins/Update/CPF + body = Update a admin
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpPut("Update/{CPF}")]
         public IActionResult UpdateAdmin([FromBody] Admin admin, string CPF)
         {
@@ -97,9 +97,9 @@ namespace api.Controllers
         }
 
         // POST - /Admin/UploadImage/CPF = upload a image using admin CPF
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("UploadImage")]
-        public IActionResult UploadImage(string CPF, string path)
+        public IActionResult UploadImage(string path, string CPF)
         {
             try
             {
@@ -112,6 +112,8 @@ namespace api.Controllers
                 }
                 else
                 {
+                    NotifyAdmin(_repository.SearchAdmin(CPF), "Path: " + path);
+
                     return StatusCode(500, "An error occurred");
                 }
 
@@ -123,7 +125,7 @@ namespace api.Controllers
         }
 
         // GET - /Admins/DownloadImage = shows the admins images
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("DownloadImage")]
         public IActionResult DownloadImage(string CPF)
         {
@@ -135,46 +137,11 @@ namespace api.Controllers
             {
                 return StatusCode(200, "https://drive.google.com/uc?id=" + GoogleDriveFilesRepository.LoadImage("admin_" + CPF));
             }
-
-            /*if (GoogleDriveFilesRepository.VerifyImage(CPF) == "404")
-            {
-                return new ContentResult
-                {
-                    ContentType = "text/html",
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Content = "<html>" +
-                    "<head> <meta charset=\"UTF-8\">" +
-                "<body style=\"text-align:center; padding:0; margin:0;\">" +
-                "<h1>Este Admin não possui imagem</h1>" +
-                "</head>" +
-                "</body>" +
-                "</html>"
-                };
-            }
-            else
-            {
-                return new ContentResult
-                {
-                    ContentType = "text/html",
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Content = "<html style=\"background-color: #252630;\">" +
-                    "<head> <meta charset=\"UTF-8\">" +
-            "<body style=\"text-align:center; padding:0; margin:0;\">" +
-            "<img src=\"https://drive.google.com/uc?id=" + GoogleDriveFilesRepository.LoadImage(CPF) + "\"/>" +
-            "<h1> " + GoogleDriveFilesRepository.LoadImage(CPF) + "</h1>" +
-                "</head>" +
-            "</body>" +
-            "</html>"
-                };
-            }*/
-
-
-
         }
 
         // Clients Methods
         // POST - /Admins/Clients/Insert + body = insert a new active client
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpPost("Clients/Insert")]
         public IActionResult InsertClient([FromBody] Client client)
         {
@@ -194,7 +161,7 @@ namespace api.Controllers
         }
 
         // PUT - /Admins/Clients/Update/CPF + body = update a active client
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpPut("Clients/Update/{CPF}")]
         public IActionResult UpdateClient([FromBody] Client client, string CPF)
         {
@@ -217,7 +184,7 @@ namespace api.Controllers
         }
 
         // GET - /Admins/Clients/Search/CPF = search a client by CPF
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("Clients/Search/{CPF}")]
         public IActionResult SearchClient(string CPF)
         {
@@ -233,7 +200,7 @@ namespace api.Controllers
         }
 
         // GET /Admins/Clients/Search/All = search all clients
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("Clients/Search/All")]
         public IActionResult SearchAllClients()
         {
@@ -251,7 +218,7 @@ namespace api.Controllers
 
         // Active Clients Methods
         // GET /Admins/Clients/Active/Search/All = search all active clients
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("Clients/Active/Search/All")]
         public IActionResult SearchActiveClients()
         {
@@ -267,7 +234,7 @@ namespace api.Controllers
         }
 
         // GET - /Clients/Active/CountTotal = count the total of active clients inserted
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("Clients/Active/CountTotal")]
         public IActionResult CountActiveClientsAccounts()
         {
@@ -282,7 +249,7 @@ namespace api.Controllers
         }
 
         // DELETE - /Clients/ActiveClient/CPF = active a client by CPF
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpDelete("Clients/ActiveClient/{CPF}")]
         public IActionResult ActiveClient(string CPF)
         {
@@ -313,7 +280,7 @@ namespace api.Controllers
 
         // Inactive Clients Methods
         // GET /Admins/Clients/Active/Search/All = search all active clients
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("Clients/Inactive/Search/All")]
         public IActionResult SearchInactiveClients()
         {
@@ -329,7 +296,7 @@ namespace api.Controllers
         }
 
         // GET - /Clients/Active/CountTotal = count the total of inactive clients inserted
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpGet("Clients/Inactive/CountTotal")]
         public IActionResult CountInactiveClientsAccounts()
         {
@@ -344,7 +311,7 @@ namespace api.Controllers
         }
 
         // DELETE - /Clients/InactiveClient/CPF = inactive a client by CPF
-        [EnableCors("AllowMyOrigin")]
+        [EnableCors("MyPolicy")]
         [HttpDelete("Clients/InactiveClient/{CPF}")]
         public IActionResult InactiveClient(string CPF)
         {

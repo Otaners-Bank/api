@@ -20,9 +20,9 @@ namespace api.Controllers
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = "<html style=\"background-color: #252630;\">" +
                 "<head> <meta charset=\"UTF-8\">" +
-                "<body style=\"text-align:center; padding:0; margin:0;\">" +
-                "<iframe src=\"https://thaleslj.github.io/OtanersBank/\" style =\"border:none; height:100%; width: 100%; \"></iframe>" +
                 "</head>" +
+                "<body style=\"text-align:center; padding:0; margin:0;\">" +
+                "<h1 style=\"margin-top: 5%; color:white;\">Otaner's Bank API</h1>" +
                 "</body>" +
                 "</html>"
             };

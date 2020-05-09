@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\projects\\OtanersBank\\API\\master\\api\\api\\api.csproj": {}
+    "C:\\projects\\OtanersBank\\api\\api\\api\\api.csproj": {}
   },
   "projects": {
-    "C:\\projects\\OtanersBank\\API\\master\\api\\api\\api.csproj": {
+    "C:\\projects\\OtanersBank\\api\\api\\api\\api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\OtanersBank\\API\\master\\api\\api\\api.csproj",
+        "projectUniqueName": "C:\\projects\\OtanersBank\\api\\api\\api\\api.csproj",
         "projectName": "api",
-        "projectPath": "C:\\projects\\OtanersBank\\API\\master\\api\\api\\api.csproj",
+        "projectPath": "C:\\projects\\OtanersBank\\api\\api\\api\\api.csproj",
         "packagesPath": "C:\\Users\\usuario\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\OtanersBank\\API\\master\\api\\api\\obj\\",
+        "outputPath": "C:\\projects\\OtanersBank\\api\\api\\api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -105,7 +105,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }
