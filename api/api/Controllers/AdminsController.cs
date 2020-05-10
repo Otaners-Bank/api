@@ -112,8 +112,6 @@ namespace api.Controllers
                 }
                 else
                 {
-                    NotifyAdmin(_repository.SearchAdmin(CPF), "Path: " + path);
-
                     return StatusCode(500, "An error occurred");
                 }
 
@@ -392,6 +390,36 @@ namespace api.Controllers
             catch (Exception)
             {
 
+            }
+        }
+
+        // GET - /Clients/SearchCPF = search if the CPF is already inserted
+        [EnableCors("MyPolicy")]
+        [HttpGet("Clients/SearchCPF")]
+        public string SearchCPF(string cpf)
+        {
+            try
+            {
+                return _repository.Admin_SearchCPF(cpf);
+            }
+            catch (Exception)
+            {
+                return "500";
+            }
+        }
+
+        // GET - /Clients/SearchEmail = search if the EMAIL is already inserted
+        [EnableCors("MyPolicy")]
+        [HttpGet("Clients/SearchEmail")]
+        public string SearchEmail(string email)
+        {
+            try
+            {
+                return _repository.Admin_SearchEmail(email);
+            }
+            catch (Exception)
+            {
+                return "500";
             }
         }
 

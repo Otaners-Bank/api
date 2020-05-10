@@ -92,12 +92,70 @@ namespace api.Models.Admins
             }
         }
 
+        public string Admin_SearchEmail(String EMAIL)
+        {
+            try
+            {
+                var search = Admin_SearchClients().Where(x => x.EMAIL == EMAIL).FirstOrDefault();
+
+                if (search==null)
+                {
+                    return "404";
+                }
+                else
+                {
+                    return "200";
+                }
+
+            }
+            catch (MongoException)
+            {
+                return null;
+            }
+        }
+
+        public string Admin_SearchCPF(String CPF)
+        {
+            try
+            {
+                var search = Admin_SearchClients().Where(x => x.CPF == CPF).FirstOrDefault();
+
+                if (search == null)
+                {
+                    return "404";
+                }
+                else
+                {
+                    return "200";
+                }
+
+            }
+            catch (MongoException)
+            {
+                return null;
+            }
+        }
+
         public string Admin_RegisterClient(Client client)
         {
             try
             {
-                if (Admin_SearchClient(client.CPF) == null)
+                if (Admin_SearchCPF(client.CPF) == "404" && Admin_SearchEmail(client.EMAIL) == "404")
                 {
+                    string AccountType = client.ACCOUNT;
+                    int inactives = Convert.ToInt32(Admin_CountActiveClientsAccounts());
+                    int actives = Convert.ToInt32(Admin_CountInactiveClientsAccounts());
+                    string number = (inactives + actives + 1).ToString();
+
+                    client.ACCOUNT = "";
+
+                    for (int i = 0; i < 4 - number.Length; i++)
+                    {
+                        client.ACCOUNT += "0";
+                    }
+
+                    client.ACCOUNT += number + "-" + AccountType;
+
                     ClientCollection.InsertOne(client);
                     return "200";
                 }
@@ -228,7 +286,7 @@ namespace api.Models.Admins
                 if (Admin_SearchClient(CPF) == null)
                 {
                     return "404";
-                }                
+                }
                 else
                 {
                     Client client = Admin_SearchClient(CPF);
