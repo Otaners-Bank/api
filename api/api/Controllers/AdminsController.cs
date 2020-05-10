@@ -32,7 +32,7 @@ namespace api.Controllers
 
                 try
                 {
-                    PASSWORD = _repository.SearchAdmin(adm.CPF).PASSWORD;
+                    PASSWORD = _repository.Login(adm.EMAIL).PASSWORD;
                     if (PASSWORD == "" || PASSWORD == string.Empty)
                     {
                         return StatusCode(404, "Account not found");
@@ -67,6 +67,22 @@ namespace api.Controllers
         public IActionResult SearchAdmin(string CPF)
         {
             var actionResult = _repository.SearchAdmin(CPF);
+            if (actionResult == null)
+            {
+                return StatusCode(404, "Admin not found");
+            }
+            else
+            {
+                return Ok(actionResult);
+            }
+        }
+
+        // GET - Search/EMAIL = Search a admin by EMAIL
+        [EnableCors("MyPolicy")]
+        [HttpGet("Search/Login/{EMAIL}")]
+        public IActionResult SearchAdminEmail(string EMAIL)
+        {
+            var actionResult = _repository.SearchAdmin_Email(EMAIL);
             if (actionResult == null)
             {
                 return StatusCode(404, "Admin not found");

@@ -42,6 +42,30 @@ namespace api.Models.Admins
             }
         }
 
+        public Admin SearchAdmin_Email(String Email)
+        {
+            try
+            {
+                return SearchAdmins().Where(x => x.EMAIL == Email).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public Admin Login(String Email)
+        {
+            try
+            {
+                return SearchAdmins().Where(x => x.EMAIL == Email).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public string UpdateAdmin(String CPF, Admin admin)
         {
             try
