@@ -114,7 +114,7 @@ namespace api.Controllers
 
         // POST - /Admin/UploadImage/CPF = upload a image using admin CPF
         [EnableCors("MyPolicy")]
-        [HttpGet("UploadImage")]
+        [HttpPost("UploadImage")]
         public IActionResult UploadImage(string path, string CPF)
         {
             try
